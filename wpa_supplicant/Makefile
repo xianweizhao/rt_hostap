@@ -103,6 +103,10 @@ ifeq ($(CONFIG_OS), internal)
 CFLAGS += -DOS_NO_C_LIB_DEFINES
 endif
 
+ifeq ($(CONFIG_OS), none)
+CFLAGS += -DOS_NO_C_LIB_DEFINES
+endif
+
 OBJS += ../src/utils/os_$(CONFIG_OS).o
 OBJS_p += ../src/utils/os_$(CONFIG_OS).o
 OBJS_c += ../src/utils/os_$(CONFIG_OS).o

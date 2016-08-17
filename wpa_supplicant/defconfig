@@ -26,10 +26,10 @@
 # replacement for WEXT and its use allows wpa_supplicant to properly control
 # the driver to improve existing functionality like roaming and to support new
 # functionality.
-CONFIG_DRIVER_WEXT=y
+#CONFIG_DRIVER_WEXT=y
 
 # Driver interface for Linux drivers using the nl80211 kernel interface
-CONFIG_DRIVER_NL80211=y
+#CONFIG_DRIVER_NL80211=y
 
 # driver_nl80211.c requires libnl. If you are compiling it yourself
 # you may need to point hostapd to your version of libnl.
@@ -68,7 +68,7 @@ CONFIG_DRIVER_NL80211=y
 # CONFIG_USE_NDISUIO=y
 
 # Driver interface for wired Ethernet drivers
-CONFIG_DRIVER_WIRED=y
+#CONFIG_DRIVER_WIRED=y
 
 # Driver interface for the Broadcom RoboSwitch family
 #CONFIG_DRIVER_ROBOSWITCH=y
@@ -82,22 +82,22 @@ CONFIG_DRIVER_WIRED=y
 
 # Enable IEEE 802.1X Supplicant (automatically included if any EAP method is
 # included)
-CONFIG_IEEE8021X_EAPOL=y
+#CONFIG_IEEE8021X_EAPOL=y
 
 # EAP-MD5
-CONFIG_EAP_MD5=y
+#CONFIG_EAP_MD5=y
 
 # EAP-MSCHAPv2
-CONFIG_EAP_MSCHAPV2=y
+#CONFIG_EAP_MSCHAPV2=y
 
 # EAP-TLS
-CONFIG_EAP_TLS=y
+#CONFIG_EAP_TLS=y
 
 # EAL-PEAP
-CONFIG_EAP_PEAP=y
+#CONFIG_EAP_PEAP=y
 
 # EAP-TTLS
-CONFIG_EAP_TTLS=y
+#CONFIG_EAP_TTLS=y
 
 # EAP-FAST
 # Note: If OpenSSL is used as the TLS library, OpenSSL 1.0 or newer is needed
@@ -106,10 +106,10 @@ CONFIG_EAP_TTLS=y
 #CONFIG_EAP_FAST=y
 
 # EAP-GTC
-CONFIG_EAP_GTC=y
+#CONFIG_EAP_GTC=y
 
 # EAP-OTP
-CONFIG_EAP_OTP=y
+#CONFIG_EAP_OTP=y
 
 # EAP-SIM (enable CONFIG_PCSC, if EAP-SIM is used)
 #CONFIG_EAP_SIM=y
@@ -124,7 +124,7 @@ CONFIG_EAP_OTP=y
 #CONFIG_EAP_PAX=y
 
 # LEAP
-CONFIG_EAP_LEAP=y
+#CONFIG_EAP_LEAP=y
 
 # EAP-AKA (enable CONFIG_PCSC, if EAP-AKA is used)
 #CONFIG_EAP_AKA=y
@@ -148,7 +148,7 @@ CONFIG_EAP_LEAP=y
 #CONFIG_EAP_TNC=y
 
 # Wi-Fi Protected Setup (WPS)
-#CONFIG_WPS=y
+CONFIG_WPS=y
 # Enable WPS external registrar functionality
 #CONFIG_WPS_ER=y
 # Disable credentials for an open network by default when acting as a WPS
@@ -165,11 +165,11 @@ CONFIG_EAP_LEAP=y
 
 # PKCS#12 (PFX) support (used to read private key and certificate file from
 # a file that usually has extension .p12 or .pfx)
-CONFIG_PKCS12=y
+#CONFIG_PKCS12=y
 
 # Smartcard support (i.e., private key on a smartcard), e.g., with openssl
 # engine.
-CONFIG_SMARTCARD=y
+#CONFIG_SMARTCARD=y
 
 # PC/SC interface for smartcards (USIM, GSM SIM)
 # Enable this if EAP-SIM or EAP-AKA is included
@@ -194,7 +194,7 @@ CONFIG_SMARTCARD=y
 # y = use default (backwards compatibility)
 # If this option is commented out, control interface is not included in the
 # build.
-CONFIG_CTRL_IFACE=y
+#CONFIG_CTRL_IFACE=y
 
 # Include support for GNU Readline and History Libraries in wpa_cli.
 # When building a wpa_cli binary for distribution, please note that these
@@ -232,29 +232,29 @@ CONFIG_CTRL_IFACE=y
 #	path is given on command line, not here; this option is just used to
 #	select the backend that allows configuration files to be used)
 # winreg = Windows registry (see win_example.reg for an example)
-CONFIG_BACKEND=file
+CONFIG_BACKEND=none
 
 # Remove configuration write functionality (i.e., to allow the configuration
 # file to be updated based on runtime configuration changes). The runtime
 # configuration can still be changed, the changes are just not going to be
 # persistent over restarts. This option can be used to reduce code size by
 # about 3.5 kB.
-#CONFIG_NO_CONFIG_WRITE=y
+CONFIG_NO_CONFIG_WRITE=y
 
 # Remove support for configuration blobs to reduce code size by about 1.5 kB.
-#CONFIG_NO_CONFIG_BLOBS=y
+CONFIG_NO_CONFIG_BLOBS=y
 
 # Select program entry point implementation:
 # main = UNIX/POSIX like main() function (default)
 # main_winsvc = Windows service (read parameters from registry)
 # main_none = Very basic example (development use only)
-#CONFIG_MAIN=main
+CONFIG_MAIN=main_none
 
 # Select wrapper for operating system and C library specific functions
 # unix = UNIX/POSIX like systems (default)
 # win32 = Windows systems
 # none = Empty template
-#CONFIG_OS=unix
+CONFIG_OS=none
 
 # Select event loop implementation
 # eloop = select() loop (default)
@@ -274,10 +274,10 @@ CONFIG_BACKEND=file
 # winpcap = WinPcap with receive thread
 # ndis = Windows NDISUIO (note: requires CONFIG_USE_NDISUIO=y)
 # none = Empty template
-#CONFIG_L2_PACKET=linux
+CONFIG_L2_PACKET=none
 
 # PeerKey handshake for Station to Station Link (IEEE 802.11e DLS)
-CONFIG_PEERKEY=y
+#CONFIG_PEERKEY=y
 
 # IEEE 802.11w (management frame protection), also known as PMF
 # Driver support is also needed for IEEE 802.11w.
@@ -289,6 +289,7 @@ CONFIG_PEERKEY=y
 # internal = Internal TLSv1 implementation (experimental)
 # none = Empty template
 #CONFIG_TLS=openssl
+CONFIG_TLS=internal
 
 # TLS-based EAP methods require at least TLS v1.0. Newer version of TLS (v1.1)
 # can be enabled to get a stronger construction of messages when block ciphers
@@ -308,7 +309,7 @@ CONFIG_PEERKEY=y
 # needed for LibTomMath. Alternatively, an integrated, minimal version of
 # LibTomMath can be used. See beginning of libtommath.c for details on benefits
 # and drawbacks of this option.
-#CONFIG_INTERNAL_LIBTOMMATH=y
+CONFIG_INTERNAL_LIBTOMMATH=y
 #ifndef CONFIG_INTERNAL_LIBTOMMATH
 #LTM_PATH=/usr/src/libtommath-0.39
 #CFLAGS += -I$(LTM_PATH)
@@ -468,7 +469,7 @@ CONFIG_PEERKEY=y
 # P2P (Wi-Fi Direct)
 # This can be used to enable P2P support in wpa_supplicant. See README-P2P for
 # more information on P2P operations.
-#CONFIG_P2P=y
+CONFIG_P2P=y
 
 # Enable TDLS support
 #CONFIG_TDLS=y

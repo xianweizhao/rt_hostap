@@ -28,3 +28,7 @@ wlantest/libwlantest.a
 wlantest/test_vectors
 wlantest/wlantest
 wlantest/wlantest_cli
+
+# cscope files
+cscope.*
+ncscope.*
