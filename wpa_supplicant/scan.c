@@ -2332,7 +2332,7 @@ int wpas_start_pno(struct wpa_supplicant *wpa_s)
 
 	i = 0;
 	prio = 0;
-	ssid = wpa_s->conf->pssid[prio];
+	ssid = wpa_s->conf->pssid;
 	while (ssid) {
 		if (!wpas_network_disabled(wpa_s, ssid)) {
 			if (ssid->scan_ssid && params.num_ssids < num_ssid) {
@@ -2350,12 +2350,6 @@ int wpas_start_pno(struct wpa_supplicant *wpa_s)
 			if (i == num_match_ssid)
 				break;
 		}
-		if (ssid->pnext)
-			ssid = ssid->pnext;
-		else if (prio + 1 == wpa_s->conf->num_prio)
-			break;
-		else
-			ssid = wpa_s->conf->pssid[++prio];
 	}
 
 	if (wpa_s->conf->filter_rssi)

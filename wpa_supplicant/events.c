@@ -1069,9 +1069,6 @@ wpa_supplicant_select_bss(struct wpa_supplicant *wpa_s,
 	if (only_first_ssid)
 		wpa_dbg(wpa_s, MSG_DEBUG, "Try to find BSS matching pre-selected network id=%d",
 			group->id);
-	else
-		wpa_dbg(wpa_s, MSG_DEBUG, "Selecting BSS from priority group %d",
-			group->priority);
 
 	for (i = 0; i < wpa_s->last_scan_res_used; i++) {
 		struct wpa_bss *bss = wpa_s->last_scan_res[i];
@@ -1094,7 +1091,6 @@ struct wpa_bss * wpa_supplicant_pick_network(struct wpa_supplicant *wpa_s,
 					     struct wpa_ssid **selected_ssid)
 {
 	struct wpa_bss *selected = NULL;
-	int prio;
 	struct wpa_ssid *next_ssid = NULL;
 	struct wpa_ssid *ssid;
 
@@ -1113,20 +1109,17 @@ struct wpa_bss * wpa_supplicant_pick_network(struct wpa_supplicant *wpa_s,
 	}
 
 	while (selected == NULL) {
-		for (prio = 0; prio < wpa_s->conf->num_prio; prio++) {
-			if (next_ssid && next_ssid->priority ==
-			    wpa_s->conf->pssid[prio]->priority) {
-				selected = wpa_supplicant_select_bss(
-					wpa_s, next_ssid, selected_ssid, 1);
-				if (selected)
-					break;
-			}
+		if (next_ssid) {
 			selected = wpa_supplicant_select_bss(
-				wpa_s, wpa_s->conf->pssid[prio],
-				selected_ssid, 0);
+				wpa_s, next_ssid, selected_ssid, 1);
 			if (selected)
-				break;
+			    break;
 		}
+		selected = wpa_supplicant_select_bss(
+			wpa_s, wpa_s->conf->ssid,
+			selected_ssid, 0);
+		if (selected)
+			break;
 
 		if (selected == NULL && wpa_s->blacklist &&
 		    !wpa_s->countermeasures) {
@@ -1249,19 +1242,16 @@ int wpa_supplicant_connect(struct wpa_supplicant *wpa_s,
 static struct wpa_ssid *
 wpa_supplicant_pick_new_network(struct wpa_supplicant *wpa_s)
 {
-	int prio;
 	struct wpa_ssid *ssid;
 
-	for (prio = 0; prio < wpa_s->conf->num_prio; prio++) {
-		for (ssid = wpa_s->conf->pssid[prio]; ssid; ssid = ssid->pnext)
-		{
-			if (wpas_network_disabled(wpa_s, ssid))
-				continue;
-			if (ssid->mode == IEEE80211_MODE_IBSS ||
-			    ssid->mode == IEEE80211_MODE_AP ||
-			    ssid->mode == IEEE80211_MODE_MESH)
-				return ssid;
-		}
+	for (ssid = wpa_s->conf->ssid; ssid; ssid = ssid->pnext)
+	{
+		if (wpas_network_disabled(wpa_s, ssid))
+			continue;
+		if (ssid->mode == IEEE80211_MODE_IBSS ||
+			ssid->mode == IEEE80211_MODE_AP ||
+			ssid->mode == IEEE80211_MODE_MESH)
+			return ssid;
 	}
 	return NULL;
 }

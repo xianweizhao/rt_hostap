@@ -80,24 +80,6 @@ struct wpa_ssid {
 	 */
 	int id;
 
-	/**
-	 * priority - Priority group
-	 *
-	 * By default, all networks will get same priority group (0). If some
-	 * of the networks are more desirable, this field can be used to change
-	 * the order in which wpa_supplicant goes through the networks when
-	 * selecting a BSS. The priority groups will be iterated in decreasing
-	 * priority (i.e., the larger the priority value, the sooner the
-	 * network is matched against the scan results). Within each priority
-	 * group, networks will be selected based on security policy, signal
-	 * strength, etc.
-	 *
-	 * Please note that AP scanning with scan_ssid=1 and ap_scan=2 mode are
-	 * not using this priority to select the order for scanning. Instead,
-	 * they try the networks in the order that used in the configuration
-	 * file.
-	 */
-	int priority;
 
 	/**
 	 * ssid - Service set identifier (network name)

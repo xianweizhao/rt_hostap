@@ -351,15 +351,7 @@ struct wpa_config {
 	/**
 	 * pssid - Per-priority network lists (in priority order)
 	 */
-	struct wpa_ssid **pssid;
-
-	/**
-	 * num_prio - Number of different priorities used in the pssid lists
-	 *
-	 * This indicates how many per-priority network lists are included in
-	 * pssid.
-	 */
-	int num_prio;
+	struct wpa_ssid *pssid;
 
 	/**
 	 * cred - Head of the credential list
@@ -1276,7 +1268,6 @@ char * wpa_config_get_no_key(struct wpa_ssid *ssid, const char *var);
 void wpa_config_update_psk(struct wpa_ssid *ssid);
 int wpa_config_add_prio_network(struct wpa_config *config,
 				struct wpa_ssid *ssid);
-int wpa_config_update_prio_list(struct wpa_config *config);
 const struct wpa_config_blob * wpa_config_get_blob(struct wpa_config *config,
 						   const char *name);
 void wpa_config_set_blob(struct wpa_config *config,

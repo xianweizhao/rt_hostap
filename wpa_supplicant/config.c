@@ -1887,7 +1887,6 @@ static const struct parse_data ssid_fields[] = {
 	{ FUNC_KEY(wep_key2) },
 	{ FUNC_KEY(wep_key3) },
 	{ INT(wep_tx_keyidx) },
-	{ INT(priority) },
 #ifdef IEEE8021X_EAPOL
 	{ INT(eap_workaround) },
 	{ STRe(pac_file) },
@@ -2002,42 +2001,12 @@ static const struct parse_data ssid_fields[] = {
 int wpa_config_add_prio_network(struct wpa_config *config,
 				struct wpa_ssid *ssid)
 {
-	int prio;
-	struct wpa_ssid *prev, **nlist;
+	struct wpa_ssid *prev;
 
-	/*
-	 * Add to an existing priority list if one is available for the
-	 * configured priority level for this network.
-	 */
-	for (prio = 0; prio < config->num_prio; prio++) {
-		prev = config->pssid[prio];
-		if (prev->priority == ssid->priority) {
-			while (prev->pnext)
-				prev = prev->pnext;
-			prev->pnext = ssid;
-			return 0;
-		}
-	}
-
-	/* First network for this priority - add a new priority list */
-	nlist = os_realloc_array(config->pssid, config->num_prio + 1,
-				 sizeof(struct wpa_ssid *));
-	if (nlist == NULL)
-		return -1;
-
-	for (prio = 0; prio < config->num_prio; prio++) {
-		if (nlist[prio]->priority < ssid->priority) {
-			os_memmove(&nlist[prio + 1], &nlist[prio],
-				   (config->num_prio - prio) *
-				   sizeof(struct wpa_ssid *));
-			break;
-		}
-	}
-
-	nlist[prio] = ssid;
-	config->num_prio++;
-	config->pssid = nlist;
-
+	prev = config->pssid;
+	while (prev->pnext)
+	    prev = prev->pnext;
+	prev->pnext = ssid;
 	return 0;
 }
 
@@ -2051,26 +2020,6 @@ int wpa_config_add_prio_network(struct wpa_config *config,
  * configuration when a network is being added or removed. This is also called
  * if a priority for a network is changed.
  */
-int wpa_config_update_prio_list(struct wpa_config *config)
-{
-	struct wpa_ssid *ssid;
-	int ret = 0;
-
-	os_free(config->pssid);
-	config->pssid = NULL;
-	config->num_prio = 0;
-
-	ssid = config->ssid;
-	while (ssid) {
-		ssid->pnext = NULL;
-		if (wpa_config_add_prio_network(config, ssid) < 0)
-			ret = -1;
-		ssid = ssid->next;
-	}
-
-	return ret;
-}
-
 
 #ifdef IEEE8021X_EAPOL
 static void eap_peer_config_free(struct eap_peer_config *eap)
@@ -2351,8 +2300,6 @@ struct wpa_ssid * wpa_config_add_network(struct wpa_config *config)
 	else
 		config->ssid = ssid;
 
-	wpa_config_update_prio_list(config);
-
 	return ssid;
 }
 
@@ -2383,7 +2330,6 @@ int wpa_config_remove_network(struct wpa_config *config, int id)
 	else
 		config->ssid = ssid->next;
 
-	wpa_config_update_prio_list(config);
 	wpa_config_free_ssid(ssid);
 	return 0;
 }
@@ -3557,20 +3503,16 @@ struct wpa_config * wpa_config_alloc_empty(const char *ctrl_interface,
  */
 void wpa_config_debug_dump_networks(struct wpa_config *config)
 {
-	int prio;
 	struct wpa_ssid *ssid;
 
-	for (prio = 0; prio < config->num_prio; prio++) {
-		ssid = config->pssid[prio];
-		wpa_printf(MSG_DEBUG, "Priority group %d",
-			   ssid->priority);
-		while (ssid) {
-			wpa_printf(MSG_DEBUG, "   id=%d ssid='%s'",
-				   ssid->id,
-				   wpa_ssid_txt(ssid->ssid, ssid->ssid_len));
-			ssid = ssid->pnext;
-		}
+	ssid = config->pssid;
+	while (ssid) {
+	    wpa_printf(MSG_DEBUG, "   id=%d ssid='%s'",
+		    ssid->id,
+		    wpa_ssid_txt(ssid->ssid, ssid->ssid_len));
+	    ssid = ssid->pnext;
 	}
+
 }
 #endif /* CONFIG_NO_STDOUT_DEBUG */
 
